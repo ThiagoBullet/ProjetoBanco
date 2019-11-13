@@ -6,6 +6,7 @@
 package projetobranco;
 
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.DefaultListModel;
 
 /**
@@ -136,7 +137,7 @@ public class MinhaSegundaTerceiraTela extends javax.swing.JFrame {
                 jComboBoxContaItemStateChanged(evt);
             }
         });
-        getContentPane().add(jComboBoxConta, new org.netbeans.lib.awtextra.AbsoluteConstraints(619, 29, 346, -1));
+        getContentPane().add(jComboBoxConta, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 30, 346, -1));
 
         jButtonAdicionarConta.setText("Add Conta");
         jButtonAdicionarConta.addActionListener(new java.awt.event.ActionListener() {
@@ -371,7 +372,7 @@ public class MinhaSegundaTerceiraTela extends javax.swing.JFrame {
         DefaultListModel<Pessoa> model = new DefaultListModel<>();
         jListConta.setModel(model);
         
-        Conta auxConta = (Conta)jComboBoxConta.getSelectedItem();
+        Conta auxConta = (Conta)jComboBoxConta.getSelectedItem(); 
         if(auxConta != null){
             model.addElement(null);
             for(Pessoa p : auxConta.getTitular()){
@@ -385,38 +386,45 @@ public class MinhaSegundaTerceiraTela extends javax.swing.JFrame {
         // TODO add your handling code here:
         Double valor = Double.parseDouble(jTextFieldValor.getText());
         
+        Funcionario auxFuncionarioOperacao = (Funcionario)jComboBoxFuncionario.getSelectedItem();
+        Conta iniConta = (Conta)jComboBoxContaIni.getSelectedItem();
+        Conta destConta = (Conta)jComboBoxContaDest.getSelectedItem();
+        Pessoa titular = jListConta.getSelectedValue();
+        
         short operacao = 0;
         
         if(jRadioButtonSaque.isSelected()){
             operacao = 1;
         }else if(jRadioButtonDeposito.isSelected()){
             operacao = 2;
+            //iniConta.transferencia(valor, destConta, iniConta.titular.get(), auxFuncionarioOperacao);
         }else if (jRadioButtonTreansferencia.isSelected()){
             operacao = 3;
         }
         
-        Funcionario auxFuncionarioOperacao = (Funcionario)jComboBoxFuncionario.getSelectedItem();
-        Conta iniConta = (Conta)jComboBoxContaIni.getSelectedItem();
-        Conta destConta = (Conta)jComboBoxContaDest.getSelectedItem();
+
         
         if (operacao == 1){
              
             
             if ((iniConta.getSaldo() - valor) >= (iniConta.getLimite() - (iniConta.getLimite() * 2))){                
                 iniConta.setSaldo(iniConta.getSaldo() - valor);
+                
             }
         }else if(operacao == 2){
             
             
             if((iniConta.getSaldo() - valor) >= (iniConta.getLimite() - (iniConta.getLimite() * 2))){
                 iniConta.setSaldo(iniConta.getSaldo() + valor);
+              
             }
         }else if(operacao == 3){
-            //iniConta.transferencia(valor, destConta, iniConta.titular, auxFuncionarioOperacao);
+            //iniConta.transferencia(valor, destConta, iniConta.titular.get(), auxFuncionarioOperacao);
             
             if((iniConta.getSaldo() - valor) >= (iniConta.getLimite() - (iniConta.getLimite() * 2))){
                 iniConta.setSaldo(iniConta.getSaldo() - valor);
                 destConta.setSaldo(destConta.getSaldo() + valor);
+              
             }
         }
         
@@ -658,7 +666,8 @@ public class MinhaSegundaTerceiraTela extends javax.swing.JFrame {
     private void jButtonLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLogActionPerformed
         // TODO add your handling code here:
         Conta auxConta = (Conta)jComboBoxConta.getSelectedItem();
-        auxConta.getLog();
+        
+        jTextAreaLog.setText(auxConta.getLog().toString());
         
     }//GEN-LAST:event_jButtonLogActionPerformed
 
