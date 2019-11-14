@@ -58,7 +58,7 @@ public class Pessoa {
     
     @Override
     public String toString(){
-        return "Nome 1º titular: "+ this.nome+"\n" +"CPF 1º Titular: "+this.cpf+"\n"+ "............."+"\n";
+        return this.nome + "\n";
     }
         
 }

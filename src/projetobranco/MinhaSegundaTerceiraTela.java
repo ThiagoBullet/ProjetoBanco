@@ -5,8 +5,11 @@
  */
 package projetobranco;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 
 /**
@@ -137,6 +140,11 @@ public class MinhaSegundaTerceiraTela extends javax.swing.JFrame {
                 jComboBoxContaItemStateChanged(evt);
             }
         });
+        jComboBoxConta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxContaActionPerformed(evt);
+            }
+        });
         getContentPane().add(jComboBoxConta, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 30, 346, -1));
 
         jButtonAdicionarConta.setText("Add Conta");
@@ -250,7 +258,7 @@ public class MinhaSegundaTerceiraTela extends javax.swing.JFrame {
         getContentPane().add(jTextFieldSaldo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 70, -1));
 
         jLabel9.setText("Limite");
-        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 140, 31, -1));
+        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 140, 31, -1));
         getContentPane().add(jTextFieldLimite, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 160, 73, -1));
 
         jLabel10.setText("Número");
@@ -279,7 +287,7 @@ public class MinhaSegundaTerceiraTela extends javax.swing.JFrame {
         jListFuncionario.setBorder(javax.swing.BorderFactory.createTitledBorder("Funcionario"));
         jScrollPane7.setViewportView(jListFuncionario);
 
-        getContentPane().add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 420, 505, -1));
+        getContentPane().add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 420, 505, 130));
 
         jComboBoxFuncionario.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -328,7 +336,7 @@ public class MinhaSegundaTerceiraTela extends javax.swing.JFrame {
                 jButtonListarActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtonListar, new org.netbeans.lib.awtextra.AbsoluteConstraints(393, 181, -1, 31));
+        getContentPane().add(jButtonListar, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 180, -1, 30));
 
         jButtonExcluir.setText("Excluir Titular");
         jButtonExcluir.addActionListener(new java.awt.event.ActionListener() {
@@ -389,45 +397,27 @@ public class MinhaSegundaTerceiraTela extends javax.swing.JFrame {
         Funcionario auxFuncionarioOperacao = (Funcionario)jComboBoxFuncionario.getSelectedItem();
         Conta iniConta = (Conta)jComboBoxContaIni.getSelectedItem();
         Conta destConta = (Conta)jComboBoxContaDest.getSelectedItem();
-        Pessoa titular = jListConta.getSelectedValue();
-        
-        short operacao = 0;
+        Pessoa titular = (Pessoa)jListConta.getSelectedValue();
         
         if(jRadioButtonSaque.isSelected()){
-            operacao = 1;
+            try {
+                iniConta.saque(valor, titular, auxFuncionarioOperacao);
+            } catch (ParseException ex) {
+                Logger.getLogger(MinhaSegundaTerceiraTela.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }else if(jRadioButtonDeposito.isSelected()){
-            operacao = 2;
-            //iniConta.transferencia(valor, destConta, iniConta.titular.get(), auxFuncionarioOperacao);
+            try {
+                iniConta.deposito(valor, titular, auxFuncionarioOperacao);
+            } catch (ParseException ex) {
+                Logger.getLogger(MinhaSegundaTerceiraTela.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }else if (jRadioButtonTreansferencia.isSelected()){
-            operacao = 3;
-        }
-        
-
-        
-        if (operacao == 1){
-             
-            
-            if ((iniConta.getSaldo() - valor) >= (iniConta.getLimite() - (iniConta.getLimite() * 2))){                
-                iniConta.setSaldo(iniConta.getSaldo() - valor);
-                
+            try {
+                iniConta.transferencia(valor, destConta, titular, auxFuncionarioOperacao);
+            } catch (ParseException ex) {
+                Logger.getLogger(MinhaSegundaTerceiraTela.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }else if(operacao == 2){
-            
-            
-            if((iniConta.getSaldo() - valor) >= (iniConta.getLimite() - (iniConta.getLimite() * 2))){
-                iniConta.setSaldo(iniConta.getSaldo() + valor);
-              
-            }
-        }else if(operacao == 3){
-            //iniConta.transferencia(valor, destConta, iniConta.titular.get(), auxFuncionarioOperacao);
-            
-            if((iniConta.getSaldo() - valor) >= (iniConta.getLimite() - (iniConta.getLimite() * 2))){
-                iniConta.setSaldo(iniConta.getSaldo() - valor);
-                destConta.setSaldo(destConta.getSaldo() + valor);
-              
-            }
-        }
-        
+        }        
         atualizaTela();
         
     }//GEN-LAST:event_jButtonExecutarActionPerformed
@@ -456,14 +446,10 @@ public class MinhaSegundaTerceiraTela extends javax.swing.JFrame {
             jTextFieldCPF.setText("" + auxFuncionario.getCpf());
             jTextFieldEndereco.setText("" + auxFuncionario.getEndereco());
 
-            model.addElement(null);
-
-            Conta auxConta = (Conta)jComboBoxFuncionario.getSelectedItem();
-
-            //for(Funcionario p : auxConta.getTitular()){
-                //   model.addElement(p);
-                //}
-        }
+            for(Funcionario p : funcionarios){
+                model.addElement(p);
+            }
+        }       
     }//GEN-LAST:event_jComboBoxFuncionarioItemStateChanged
 
     private void jButtonSalvarFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSalvarFuncionarioActionPerformed
@@ -489,19 +475,18 @@ public class MinhaSegundaTerceiraTela extends javax.swing.JFrame {
 
     private void jButtonEditarFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarFuncionarioActionPerformed
         // TODO add your handling code here:
-        Funcionario auxFuncionario = (Funcionario)jComboBoxFuncionario.getSelectedItem();
-        auxFuncionario.setEndereco(jTextFieldEndereco.getText());
-        auxFuncionario.setSalario(Double.parseDouble(jTextFieldSaldo.getText()));
-        auxFuncionario.setMatricula(jTextFieldMatricula.getText());
+        Funcionario auxFuncionario = (Funcionario)jListFuncionario.getSelectedValue();
+        auxFuncionario.setNome(jTextFieldNome.getText());
         auxFuncionario.setCpf(jTextFieldCPF.getText());
+        auxFuncionario.setEndereco(jTextFieldEndereco.getText());
         
-        jButtonEditarFuncionario.doClick();
+        jButtonListar.doClick();
         atualizaTela();
     }//GEN-LAST:event_jButtonEditarFuncionarioActionPerformed
 
     private void jButtonExcluirFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirFuncionarioActionPerformed
         // TODO add your handling code here:
-        funcionarios.remove(jListFuncionario.getSelectedValuesList());
+        funcionarios.remove(jComboBoxFuncionario.getSelectedItem());
         
         atualizaTela();
     }//GEN-LAST:event_jButtonExcluirFuncionarioActionPerformed
@@ -555,7 +540,8 @@ public class MinhaSegundaTerceiraTela extends javax.swing.JFrame {
 
     private void jButtonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirActionPerformed
         // TODO add your handling code here: 
-        pessoas.remove(jListConta.getSelectedValue()); //NAO TA FUNCIONANDO
+        Pessoa auxPessoa = (Pessoa)jListConta.getSelectedValue(); // RESOLVER
+        pessoas.remove(auxPessoa);
         
         jButtonListar.doClick();
         atualizaTela();
@@ -563,10 +549,10 @@ public class MinhaSegundaTerceiraTela extends javax.swing.JFrame {
 
     private void jButtonEditarTitularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarTitularActionPerformed
         // TODO add your handling code here:
-        Conta auxConta = (Conta)jComboBoxConta.getSelectedItem();
-        auxConta.setNumero(Integer.parseInt(jTextFieldNumero.getText()));
-        auxConta.setSaldo(Double.parseDouble(jTextFieldSaldo.getText()));
-        auxConta.setLimite(Double.parseDouble(jTextFieldLimite.getText()));
+        Pessoa auxPessoa = (Pessoa)jListConta.getSelectedValue();
+        auxPessoa.setNome(jTextFieldNome.getText());
+        auxPessoa.setCpf(jTextFieldCPF.getText());
+        auxPessoa.setEndereco(jTextFieldEndereco.getText());
         
         jButtonListar.doClick();
         atualizaTela();
@@ -659,6 +645,7 @@ public class MinhaSegundaTerceiraTela extends javax.swing.JFrame {
         // TODO add your handling code here:
         Conta auxConta = (Conta)jComboBoxConta.getSelectedItem();
         contas.remove(auxConta);
+        
         jButtonListar.doClick();
         atualizaTela();
     }//GEN-LAST:event_jButtonExcluirContaActionPerformed
@@ -666,10 +653,13 @@ public class MinhaSegundaTerceiraTela extends javax.swing.JFrame {
     private void jButtonLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLogActionPerformed
         // TODO add your handling code here:
         Conta auxConta = (Conta)jComboBoxConta.getSelectedItem();
-        
         jTextAreaLog.setText(auxConta.getLog().toString());
         
     }//GEN-LAST:event_jButtonLogActionPerformed
+
+    private void jComboBoxContaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxContaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jComboBoxContaActionPerformed
 
     /**
      * @param args the command line arguments

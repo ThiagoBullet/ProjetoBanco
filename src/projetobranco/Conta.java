@@ -107,8 +107,8 @@ public class Conta {
     }
     
     public void deposito(double valor, Pessoa titular, Funcionario funcionario) throws ParseException{
-        if(this.limite >= (this.saldo + valor)){
-            this.saldo += valor;
+        if(1 < 2){
+            this.saldo = this.saldo + valor;
             GravaLog("Deposito", "OK", valor, titular, funcionario, this);
         }
         else{
@@ -135,14 +135,16 @@ public class Conta {
         Date data = new Date(); 
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         DecimalFormat df = new DecimalFormat("R$"+"#,###.00");
-        log.append( dateFormat.format(new Date() + operacao + status + valor + titular + funcionario + destino + "\n"));
+        log.append( data + " == " + operacao + " " + status + " " + df.format(valor) + " " + titular + " " + funcionario + " " + destino + "\n");
+        //log.append( dateFormat.format(new Date() + operacao + status + valor + titular + funcionario + destino + "\n"));
         
+        //System.out.println( data);
         System.out.println( "Registros LOG: \n" + log );
     }
     
     @Override
     public String toString(){
-        return "Conta Nº: "+this.numero+"\n" +"Saldo(R$): "+this.saldo+"\n" +"Limite(R$): "+this.limite+"\n" + "Titular: " + this.titular;
+        return "Conta Nº: "+this.numero+"\n" +" Saldo(R$): "+this.saldo+"\n" +" Limite(R$): "+this.limite+"\n"; // + " Titular: " + this.titular
         //return "Conta Nº: "+this.numero+"\n";
     }
     
